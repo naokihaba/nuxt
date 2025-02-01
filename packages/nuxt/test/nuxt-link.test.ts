@@ -109,6 +109,10 @@ describe('nuxt-link:isExternal', () => {
     expect(nuxtLink({ to: { path: '/to' }, target: '_blank' }).type).toBe(EXTERNAL)
   })
 
+  it('honors `externalRelAttribute` option', () => {
+    expect(nuxtLink({ to: { path: '/to' } }, { externalTargetAttribute: '_blank' }).type).toBe(EXTERNAL)
+  })
+
   it('honors `external` prop', () => {
     expect(nuxtLink({ to: '/to', external: true }).type).toBe(EXTERNAL)
     expect(nuxtLink({ to: '/to', external: false }).type).toBe(INTERNAL)

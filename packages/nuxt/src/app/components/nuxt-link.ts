@@ -91,6 +91,10 @@ export interface NuxtLinkOptions extends
    */
   externalRelAttribute?: string | null
   /**
+   * A default `target` attribute value applied on external links.
+   */
+  externalTargetAttribute?: NuxtLinkProps['target']
+  /**
    * An option to either add or remove trailing slashes in the `href`.
    * If unset or not matching the valid values `append` or `remove`, it will be ignored.
    */
@@ -419,7 +423,7 @@ export function defineNuxtLink (options: NuxtLinkOptions) {
         }
 
         // Resolves `target` value
-        const target = props.target || null
+        const target = props.target || options.externalTargetAttribute || null
 
         // Resolves `rel`
         checkPropConflicts(props, 'noRel', 'rel')
@@ -439,6 +443,8 @@ export function defineNuxtLink (options: NuxtLinkOptions) {
           if (!slots.default) {
             return null
           }
+
+          const _isExternal = isExternal.value || hasTarget.value
 
           return slots.default({
             href: href.value,
