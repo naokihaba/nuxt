@@ -198,9 +198,12 @@ export const ComponentsChunkPlugin = createUnplugin((options: ComponentChunkOpti
         } else if (typeof rollupOptions.input === 'object' && Array.isArray(rollupOptions.input)) {
           rollupOptions.input = rollupOptions.input.reduce<{ [key: string]: string }>((acc, input) => { acc[input] = input; return acc }, {})
         }
-
-        // don't use 'strict', this would create another "facade" chunk for the entry file, causing the ssr styles to not detect everything
-        rollupOptions.preserveEntrySignatures = 'allow-extension'
+        const isRolldown = !!(await import('vite')).rolldownVersion
+        if(!isRolldown) {
+          // don't use 'strict', this would create another "facade" chunk for the entry file, causing the ssr styles to not detect everything
+          // @ts-expect-error Rolldown does not support this option (will be available differently later on)
+          rollupOptions.preserveEntrySignatures = 'allow-extension'
+        }
         for (const component of components) {
           if (component.mode === 'client' || component.mode === 'all') {
             rollupOptions.input![component.pascalName] = await resolvePath(component.filePath)

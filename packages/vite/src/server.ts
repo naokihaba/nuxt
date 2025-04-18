@@ -90,12 +90,16 @@ export async function buildServer (ctx: ViteBuildContext) {
           new RegExp('^' + escapeStringRegexp(withTrailingSlash(resolve(ctx.nuxt.options.rootDir, ctx.nuxt.options.dir.shared)))),
         ],
         output: {
+          // The following options are not supported by Rolldown, so we apply them when using non-Rolldown-powered Vite only
+          ...vite.rolldownVersion ? {} : {
+            preserveModules: true,
+            generatedCode: {
+              symbols: true, // temporary fix for https://github.com/vuejs/core/issues/8351,
+              constBindings: true,
+            },
+          }, 
           entryFileNames: '[name].mjs',
           format: 'module',
-          generatedCode: {
-            symbols: true, // temporary fix for https://github.com/vuejs/core/issues/8351,
-            constBindings: true,
-          },
         },
         onwarn (warning, rollupWarn) {
           if (warning.code && ['UNUSED_EXTERNAL_IMPORT'].includes(warning.code)) {
@@ -116,7 +120,10 @@ export async function buildServer (ctx: ViteBuildContext) {
   } satisfies vite.InlineConfig, ctx.nuxt.options.vite.$server || {}))
 
   if (serverConfig.build?.rollupOptions?.output && !Array.isArray(serverConfig.build.rollupOptions.output)) {
-    delete serverConfig.build.rollupOptions.output.manualChunks
+    if(!vite.rolldownVersion) {
+      // @ts-ignore Rolldown has no support for `output.manualChunks`
+      delete serverConfig.build.rollupOptions.output.manualChunks
+    }
   }
 
   // tell rollup's nitro build about the original sources of the generated vite server build

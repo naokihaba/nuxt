@@ -92,10 +92,13 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
                 : chunk => withoutLeadingSlash(join(nuxt.options.app.buildAssetsDir, `${sanitizeFilePath(filename(chunk.names[0]!))}.[hash].[ext]`)),
             },
           },
-          watch: {
-            chokidar: { ...nuxt.options.watchers.chokidar, ignored: [isIgnored, /[\\/]node_modules[\\/]/] },
-            exclude: nuxt.options.ignore,
-          },
+          // TODO: Watch is not supported in rolldown-vite yet
+          ...vite.rolldownVersion ? {} : {
+            watch: {
+              chokidar: { ...nuxt.options.watchers.chokidar, ignored: [isIgnored, /[\\/]node_modules[\\/]/] },
+              exclude: nuxt.options.ignore,
+            },
+          }
         },
         plugins: [
           // add resolver for files in public assets directories
@@ -104,6 +107,7 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
             sourcemap: !!nuxt.options.sourcemap.server,
             baseURL: nuxt.options.app.baseURL,
           }),
+          // @ts-expect-error https://github.com/vitejs/rolldown-vite/issues/117
           replace({ preventAssignment: true, ...globalThisReplacements }),
         ],
         server: {
@@ -121,7 +125,10 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
   // to detect whether to inject production or development code (such as HMR code)
   if (!nuxt.options.dev) {
     ctx.config.server!.watch = undefined
-    ctx.config.build!.watch = undefined
+    if(!vite.rolldownVersion) {
+      // @ts-expect-error Not supported in rolldown-vite yet
+      ctx.config.build!.watch = undefined
+    }
   }
 
   // TODO: this may no longer be needed with most recent vite version
@@ -178,7 +185,7 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
         replaceOptions[key] = config.define![key]
       }
     }
-
+    // @ts-expect-error https://github.com/vitejs/rolldown-vite/issues/117
     config.plugins!.push(replace(replaceOptions))
   })
 
