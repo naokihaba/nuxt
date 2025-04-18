@@ -186,7 +186,6 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
         replaceOptions[key] = config.define![key]
       }
     }
-    // @ts-expect-error https://github.com/vitejs/rolldown-vite/issues/117
     config.plugins!.push(replace(replaceOptions))
   })
 

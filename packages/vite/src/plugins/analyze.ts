@@ -28,7 +28,6 @@ export function analyzePlugin (ctx: ViteBuildContext): Plugin[] {
         }
       },
     },
-    // @ts-expect-error https://github.com/vitejs/rolldown-vite/issues/117
     visualizer({
       ...analyzeOptions,
       filename: 'filename' in analyzeOptions ? analyzeOptions.filename!.replace('{name}', 'client') : undefined,
