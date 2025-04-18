@@ -21,13 +21,14 @@ export function analyzePlugin (ctx: ViteBuildContext): Plugin[] {
           for (const [moduleId, module] of Object.entries(bundle.modules)) {
             minifiedModuleEntryPromises.push(
               transform(module.code || '', { minify: true })
-                .then(result => [moduleId, { ...module, code: result.code }]),
+                .then(result => [moduleId, { ...module as RenderedModule, code: result.code }]),
             )
           }
           bundle.modules = Object.fromEntries(await Promise.all(minifiedModuleEntryPromises))
         }
       },
     },
+    // @ts-expect-error https://github.com/vitejs/rolldown-vite/issues/117
     visualizer({
       ...analyzeOptions,
       filename: 'filename' in analyzeOptions ? analyzeOptions.filename!.replace('{name}', 'client') : undefined,

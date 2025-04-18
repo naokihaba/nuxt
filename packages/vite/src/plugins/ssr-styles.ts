@@ -61,6 +61,8 @@ export function ssrStylesPlugin (options: SSRStylePluginOptions): Plugin {
     generateBundle (outputOptions) {
       if (options.mode === 'client') { return }
 
+      const isRolldown = this.meta.rolldownVersion
+
       const emitted: Record<string, string> = {}
       for (const [file, { files, inBundle }] of Object.entries(cssMap)) {
         // File has been tree-shaken out of build (or there are no styles to inline)
@@ -70,9 +72,12 @@ export function ssrStylesPlugin (options: SSRStylePluginOptions): Plugin {
           ? outputOptions.assetFileNames
           : outputOptions.assetFileNames({
               type: 'asset',
-              name: `${fileName}-styles.mjs`,
+              // Rolldown only uses pluralized options here
+              ...(isRolldown ? {} : { 
+                name: `${fileName}-styles.mjs`,
+                originalFileName: `${fileName}-styles.mjs`,
+              }),
               names: [`${fileName}-styles.mjs`],
-              originalFileName: `${fileName}-styles.mjs`,
               originalFileNames: [`${fileName}-styles.mjs`],
               source: '',
             })
