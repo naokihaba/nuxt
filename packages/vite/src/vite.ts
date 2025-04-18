@@ -93,6 +93,7 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
             },
           },
           // TODO: Watch is not supported in rolldown-vite yet
+          // @ts-ignore Rolldown-Vite specific
           ...vite.rolldownVersion ? {} : {
             watch: {
               chokidar: { ...nuxt.options.watchers.chokidar, ignored: [isIgnored, /[\\/]node_modules[\\/]/] },
@@ -124,8 +125,9 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
   // to detect whether to inject production or development code (such as HMR code)
   if (!nuxt.options.dev) {
     ctx.config.server!.watch = undefined
+    // @ts-ignore Rolldown-Vite specific
     if(!vite.rolldownVersion) {
-      // @ts-expect-error Not supported in rolldown-vite yet
+      // Build Watchers are not available in rolldown-vite yet
       ctx.config.build!.watch = undefined
     }
   }
