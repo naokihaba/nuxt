@@ -107,7 +107,6 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
             sourcemap: !!nuxt.options.sourcemap.server,
             baseURL: nuxt.options.app.baseURL,
           }),
-          // @ts-expect-error https://github.com/vitejs/rolldown-vite/issues/117
           replace({ preventAssignment: true, ...globalThisReplacements }),
         ],
         server: {
@@ -185,7 +184,6 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
         replaceOptions[key] = config.define![key]
       }
     }
-    // @ts-expect-error https://github.com/vitejs/rolldown-vite/issues/117
     config.plugins!.push(replace(replaceOptions))
   })
 
