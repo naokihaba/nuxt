@@ -91,6 +91,7 @@ export async function buildServer (ctx: ViteBuildContext) {
         ],
         output: {
           // The following options are not supported by Rolldown, so we apply them when using non-Rolldown-powered Vite only
+          // @ts-ignore Rolldown-Vite specific
           ...vite.rolldownVersion ? {} : {
             preserveModules: true,
             generatedCode: {
@@ -120,6 +121,7 @@ export async function buildServer (ctx: ViteBuildContext) {
   } satisfies vite.InlineConfig, ctx.nuxt.options.vite.$server || {}))
 
   if (serverConfig.build?.rollupOptions?.output && !Array.isArray(serverConfig.build.rollupOptions.output)) {
+    // @ts-ignore Rolldown-Vite specific
     if(!vite.rolldownVersion) {
       // @ts-ignore Rolldown has no support for `output.manualChunks`
       delete serverConfig.build.rollupOptions.output.manualChunks

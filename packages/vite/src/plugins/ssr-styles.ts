@@ -61,6 +61,7 @@ export function ssrStylesPlugin (options: SSRStylePluginOptions): Plugin {
     generateBundle (outputOptions) {
       if (options.mode === 'client') { return }
 
+      // @ts-ignore Rolldown-Vite specific
       const isRolldown = this.meta.rolldownVersion
 
       const emitted: Record<string, string> = {}
@@ -72,14 +73,12 @@ export function ssrStylesPlugin (options: SSRStylePluginOptions): Plugin {
           ? outputOptions.assetFileNames
           : outputOptions.assetFileNames({
               type: 'asset',
-              // Rolldown only uses pluralized options here
-              ...(isRolldown ? {} : { 
-                name: `${fileName}-styles.mjs`,
-                originalFileName: `${fileName}-styles.mjs`,
-              }),
               names: [`${fileName}-styles.mjs`],
               originalFileNames: [`${fileName}-styles.mjs`],
               source: '',
+              // Deprecated options we still have to pass
+              name: undefined,
+              originalFileName: null,
             })
 
         const baseDir = dirname(base)
