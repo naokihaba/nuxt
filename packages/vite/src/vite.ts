@@ -77,6 +77,8 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
         define: {
           __NUXT_VERSION__: JSON.stringify(nuxt._version),
           __NUXT_ASYNC_CONTEXT__: nuxt.options.experimental.asyncContext,
+          // Rely on `define` for globalThis replacement when using Rolldown, otherwise use rollup's replace plugin
+          ...vite.rolldownVersion ? { global: 'globalThis', } : {},
         },
         build: {
           copyPublicDir: false,
@@ -108,7 +110,8 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
             sourcemap: !!nuxt.options.sourcemap.server,
             baseURL: nuxt.options.app.baseURL,
           }),
-          replace({ preventAssignment: true, ...globalThisReplacements }),
+          // Use replace plugin if Rolldown is not used, otherwise use `define`
+          ...(vite.rolldownVersion ? {} : { replace({ preventAssignment: true, ...globalThisReplacements }) }),
         ],
         server: {
           watch: { ...nuxt.options.watchers.chokidar, ignored: [isIgnored, /[\\/]node_modules[\\/]/] },

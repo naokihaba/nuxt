@@ -20,7 +20,8 @@ interface ServerOnlyComponentTransformPluginOptions {
 
 interface ComponentChunkOptions {
   getComponents: () => Component[]
-  buildDir: string
+  buildDir: string,
+  isRolldownCompatEnabled: boolean
 }
 
 const SCRIPT_RE = /<script[^>]*>/gi
@@ -176,8 +177,8 @@ function getPropsToString (bindings: Record<string, string>): string {
   }
 }
 
-export const ComponentsChunkPlugin = createUnplugin((options: ComponentChunkOptions) => {
-  const { buildDir } = options
+export const ComponentsChunkPlugin = createUnplugin((options: ComponentChunkOptions, meta) => {
+  const { buildDir, isRolldownCompatEnabled } = options
   return {
     name: 'nuxt:components-chunk',
     vite: {
@@ -198,9 +199,9 @@ export const ComponentsChunkPlugin = createUnplugin((options: ComponentChunkOpti
         } else if (typeof rollupOptions.input === 'object' && Array.isArray(rollupOptions.input)) {
           rollupOptions.input = rollupOptions.input.reduce<{ [key: string]: string }>((acc, input) => { acc[input] = input; return acc }, {})
         }
-        // @ts-ignore Rolldown-Vite specific
-        const isRolldown = !!(await import('vite')).rolldownVersion
-        if(!isRolldown) {
+
+        // Option does not exist (yet) in `rolldown` - https://github.com/rolldown/rolldown/issues/3500
+        if(!isRolldownCompatEnabled) {
           // don't use 'strict', this would create another "facade" chunk for the entry file, causing the ssr styles to not detect everything
           rollupOptions.preserveEntrySignatures = 'allow-extension'
         }

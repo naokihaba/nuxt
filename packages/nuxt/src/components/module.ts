@@ -253,6 +253,7 @@ export default defineNuxtModule<ComponentsOptions>({
             config.plugins.push(ComponentsChunkPlugin.vite({
               getComponents,
               buildDir: nuxt.options.buildDir,
+              isRolldownCompatEnabled: nuxt.options.experimental.rolldownCompat
             }))
           } else {
             writeFileSync(join(nuxt.options.buildDir, 'components-chunk.mjs'), `export const paths = ${JSON.stringify(
