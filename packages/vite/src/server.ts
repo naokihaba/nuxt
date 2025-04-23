@@ -91,6 +91,7 @@ export async function buildServer (ctx: ViteBuildContext) {
         ],
         output: {
           // The following options are not supported by Rolldown, so we apply them when using non-Rolldown-powered Vite only
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore Rolldown-Vite specific - https://github.com/rolldown/rolldown/issues/206
           ...vite.rolldownVersion ? {} : {
             preserveModules: true,
@@ -121,12 +122,14 @@ export async function buildServer (ctx: ViteBuildContext) {
   } satisfies vite.InlineConfig, ctx.nuxt.options.vite.$server || {}))
 
   if (serverConfig.build?.rollupOptions?.output && !Array.isArray(serverConfig.build.rollupOptions.output)) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore Rolldown-Vite specific
     if(!vite.rolldownVersion) {
       // Rolldown has no support for `output.manualChunks`
       delete serverConfig.build.rollupOptions.output.manualChunks
     } else {
       // If Rolldown is used, remove all chunk settings (mirror behavior for rollup for now)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore Rolldown-only option
       delete serverConfig.build.rollupOptions.output.advancedChunks
     }

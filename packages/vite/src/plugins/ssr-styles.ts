@@ -61,9 +61,6 @@ export function ssrStylesPlugin (options: SSRStylePluginOptions): Plugin {
     generateBundle (outputOptions) {
       if (options.mode === 'client') { return }
 
-      // @ts-ignore Rolldown-Vite specific
-      const isRolldown = this.meta.rolldownVersion
-
       const emitted: Record<string, string> = {}
       for (const [file, { files, inBundle }] of Object.entries(cssMap)) {
         // File has been tree-shaken out of build (or there are no styles to inline)
