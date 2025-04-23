@@ -98,12 +98,14 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
           // TODO: Watch is not supported in rolldown-vite yet
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore Rolldown-Vite specific
-          ...vite.rolldownVersion ? {} : {
-            watch: {
-              chokidar: { ...nuxt.options.watchers.chokidar, ignored: [isIgnored, /[\\/]node_modules[\\/]/] },
-              exclude: nuxt.options.ignore,
-            },
-          }
+          ...vite.rolldownVersion
+            ? {}
+            : {
+                watch: {
+                  chokidar: { ...nuxt.options.watchers.chokidar, ignored: [isIgnored, /[\\/]node_modules[\\/]/] },
+                  exclude: nuxt.options.ignore,
+                },
+              },
         },
         plugins: [
           // add resolver for files in public assets directories
@@ -130,7 +132,7 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
     ctx.config.server!.watch = undefined
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore Rolldown-Vite specific
-    if(!vite.rolldownVersion) {
+    if (!vite.rolldownVersion) {
       // Build Watchers are not available in rolldown-vite yet
       ctx.config.build!.watch = undefined
     }

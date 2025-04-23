@@ -646,6 +646,6 @@ export default defineResolvers({
       $resolve: (val) => {
         return typeof val === 'boolean' ? val : false
       },
-    }
+    },
   },
 })
