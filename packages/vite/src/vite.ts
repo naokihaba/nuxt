@@ -93,6 +93,7 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
             },
           },
           // TODO: Watch is not supported in rolldown-vite yet
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore Rolldown-Vite specific
           ...vite.rolldownVersion ? {} : {
             watch: {
@@ -125,6 +126,7 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
   // to detect whether to inject production or development code (such as HMR code)
   if (!nuxt.options.dev) {
     ctx.config.server!.watch = undefined
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore Rolldown-Vite specific
     if(!vite.rolldownVersion) {
       // Build Watchers are not available in rolldown-vite yet
