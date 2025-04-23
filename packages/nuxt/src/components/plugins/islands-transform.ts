@@ -177,7 +177,7 @@ function getPropsToString (bindings: Record<string, string>): string {
   }
 }
 
-export const ComponentsChunkPlugin = createUnplugin((options: ComponentChunkOptions, meta) => {
+export const ComponentsChunkPlugin = createUnplugin((options: ComponentChunkOptions) => {
   const { buildDir, isRolldownCompatEnabled } = options
   return {
     name: 'nuxt:components-chunk',
