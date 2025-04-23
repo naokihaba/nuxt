@@ -80,6 +80,8 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
         define: {
           __NUXT_VERSION__: JSON.stringify(nuxt._version),
           __NUXT_ASYNC_CONTEXT__: nuxt.options.experimental.asyncContext,
+          // Rely on `define` for globalThis replacement when using Rolldown, otherwise use rollup's replace plugin
+          ...vite.rolldownVersion ? { global: 'globalThis', } : {},
         },
         build: {
           copyPublicDir: false,

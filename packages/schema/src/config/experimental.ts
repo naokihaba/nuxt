@@ -640,5 +640,12 @@ export default defineResolvers({
         return typeof val === 'boolean' ? val : (await get('future')).compatibilityVersion !== 4
       },
     },
+
+    /** When using Rolldown / `rolldown-vite`, this flag will enable certain compatibility features (e.g. unset non-existing options or leverage news ones) */
+    rolldownCompat: {
+      $resolve: (val) => {
+        return typeof val === 'boolean' ? val : false
+      },
+    }
   },
 })
