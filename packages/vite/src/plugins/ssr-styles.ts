@@ -76,11 +76,9 @@ export function ssrStylesPlugin (options: SSRStylePluginOptions): Plugin {
               names: [`${fileName}-styles.mjs`],
               originalFileNames: [`${fileName}-styles.mjs`],
               source: '',
-              // Deprecated options we still have to pass when using Rollup
-              ...(isRolldown ? {} : {
-                name: undefined,
-                originalFileName: null,
-              }),
+              // Have to pass deprecated options
+              name: undefined,
+              originalFileName: null,
             })
 
         const baseDir = dirname(base)
