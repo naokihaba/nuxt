@@ -20,7 +20,7 @@ interface ServerOnlyComponentTransformPluginOptions {
 
 interface ComponentChunkOptions {
   getComponents: () => Component[]
-  buildDir: string,
+  buildDir: string
   isRolldownCompatEnabled: boolean
 }
 
@@ -201,7 +201,7 @@ export const ComponentsChunkPlugin = createUnplugin((options: ComponentChunkOpti
         }
 
         // Option does not exist (yet) in `rolldown` - https://github.com/rolldown/rolldown/issues/3500
-        if(!isRolldownCompatEnabled) {
+        if (!isRolldownCompatEnabled) {
           // don't use 'strict', this would create another "facade" chunk for the entry file, causing the ssr styles to not detect everything
           rollupOptions.preserveEntrySignatures = 'allow-extension'
         }

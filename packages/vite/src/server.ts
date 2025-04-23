@@ -93,13 +93,15 @@ export async function buildServer (ctx: ViteBuildContext) {
           // The following options are not supported by Rolldown, so we apply them when using non-Rolldown-powered Vite only
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore Rolldown-Vite specific - https://github.com/rolldown/rolldown/issues/206
-          ...vite.rolldownVersion ? {} : {
-            preserveModules: true,
-            generatedCode: {
-              symbols: true, // temporary fix for https://github.com/vuejs/core/issues/8351,
-              constBindings: true,
-            },
-          }, 
+          ...vite.rolldownVersion
+            ? {}
+            : {
+                preserveModules: true,
+                generatedCode: {
+                  symbols: true, // temporary fix for https://github.com/vuejs/core/issues/8351,
+                  constBindings: true,
+                },
+              },
           entryFileNames: '[name].mjs',
           format: 'module',
         },
@@ -124,7 +126,7 @@ export async function buildServer (ctx: ViteBuildContext) {
   if (serverConfig.build?.rollupOptions?.output && !Array.isArray(serverConfig.build.rollupOptions.output)) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore Rolldown-Vite specific
-    if(!vite.rolldownVersion) {
+    if (!vite.rolldownVersion) {
       // Rolldown has no support for `output.manualChunks`
       delete serverConfig.build.rollupOptions.output.manualChunks
     } else {
