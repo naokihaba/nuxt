@@ -51,7 +51,6 @@ import { ResolveDeepImportsPlugin } from './plugins/resolve-deep-imports'
 import { ResolveExternalsPlugin } from './plugins/resolved-externals'
 import { PrehydrateTransformPlugin } from './plugins/prehydrate'
 import { VirtualFSPlugin } from './plugins/virtual'
-import { initParser } from './utils/parse'
 
 export function createNuxt (options: NuxtOptions): Nuxt {
   const hooks = createHooks<NuxtHooks>()
@@ -282,8 +281,6 @@ async function initNuxt (nuxt: Nuxt) {
     }
   }
 
-  await initParser()
-
   // Support Nuxt VFS
   addBuildPlugin(VirtualFSPlugin(nuxt, { mode: 'server' }), { client: false })
   addBuildPlugin(VirtualFSPlugin(nuxt, { mode: 'client', alias: { 'nitro/runtime': join(nuxt.options.buildDir, 'nitro.client.mjs') } }), { server: false })
@@ -486,6 +483,13 @@ async function initNuxt (nuxt: Nuxt) {
     name: 'NuxtLoadingIndicator',
     priority: 10, // built-in that we do not expect the user to override
     filePath: resolve(nuxt.options.appDir, 'components/nuxt-loading-indicator'),
+  })
+
+  // Add <NuxtTime>
+  addComponent({
+    name: 'NuxtTime',
+    priority: 10, // built-in that we do not expect the user to override
+    filePath: resolve(nuxt.options.appDir, 'components/nuxt-time.vue'),
   })
 
   // Add <NuxtRouteAnnouncer>
