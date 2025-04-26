@@ -96,9 +96,8 @@ export async function buildServer (ctx: ViteBuildContext) {
           ...vite.rolldownVersion
             ? {}
             : {
-                preserveModules: true,
                 generatedCode: {
-                  symbols: true, // temporary fix for https://github.com/vuejs/core/issues/8351,
+                  symbols: true, // temporary fix for https://github.com/vuejs/core/issues/8351
                   constBindings: true,
                 },
               },
