@@ -5,6 +5,10 @@ packages:
   - '!packages/test-utils'
   - playground
   - test/fixtures/*
+
 ignoredBuiltDependencies:
   - vue-demi
   - esbuild
+
+onlyBuiltDependencies:
+  - rolldown
