@@ -21,7 +21,6 @@ interface ServerOnlyComponentTransformPluginOptions {
 interface ComponentChunkOptions {
   getComponents: () => Component[]
   buildDir: string
-  isRolldownCompatEnabled: boolean
 }
 
 const SCRIPT_RE = /<script[^>]*>/gi
@@ -184,7 +183,7 @@ function getPropsToString (bindings: Record<string, string>): string {
 }
 
 export const ComponentsChunkPlugin = createUnplugin((options: ComponentChunkOptions) => {
-  const { buildDir, isRolldownCompatEnabled } = options
+  const { buildDir } = options
   return {
     name: 'nuxt:components-chunk',
     vite: {
@@ -207,6 +206,7 @@ export const ComponentsChunkPlugin = createUnplugin((options: ComponentChunkOpti
         }
 
         // Option does not exist (yet) in `rolldown` - https://github.com/rolldown/rolldown/issues/3500
+        const isRolldownCompatEnabled = await import('vite').then(r => 'rolldownVersion' in r)
         if (!isRolldownCompatEnabled) {
           // don't use 'strict', this would create another "facade" chunk for the entry file, causing the ssr styles to not detect everything
           rollupOptions.preserveEntrySignatures = 'allow-extension'

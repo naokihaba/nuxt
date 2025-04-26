@@ -193,6 +193,7 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
         replaceOptions[key] = config.define![key]
       }
     }
+
     config.plugins!.push(replace(replaceOptions))
   })
 
