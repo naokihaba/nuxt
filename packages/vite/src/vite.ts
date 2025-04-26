@@ -114,6 +114,7 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
             sourcemap: !!nuxt.options.sourcemap.server,
             baseURL: nuxt.options.app.baseURL,
           }),
+          // @ts-expect-error https://github.com/vitejs/rolldown-vite/issues/117
           replace({ preventAssignment: true, ...globalThisReplacements }),
         ],
         server: {
@@ -135,6 +136,8 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
     // @ts-ignore Rolldown-Vite specific
     if (!vite.rolldownVersion) {
       // Build Watchers are not available in rolldown-vite yet
+
+      // @ts-expect-error https://github.com/vitejs/rolldown-vite/issues/117
       ctx.config.build!.watch = undefined
     }
   }
@@ -194,7 +197,7 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
       }
     }
 
-    config.plugins!.push(replace(replaceOptions))
+    config.plugins!.push(replace(replaceOptions) as any)
   })
 
   if (!ctx.nuxt.options.dev) {
