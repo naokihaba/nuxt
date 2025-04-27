@@ -35,7 +35,7 @@ describe('components:loader', () => {
         setup(__props) {
 
           const NamedComponent = __nuxt_component_0;
-          
+
       return (_ctx, _cache) => {
         const _component_MyComponent = __nuxt_component_0;
         const _component_LazyMyComponent = __nuxt_component_0_lazy;
@@ -174,7 +174,7 @@ async function transform (code: string, filename: string) {
         },
       },
       LazyHydrationTransformPlugin({ getComponents: () => components }).rollup(),
-      vuePlugin(),
+      vuePlugin() as any,
       vuePluginJsx(),
       LoaderPlugin({
         clientDelayedComponentRuntime: '/client-runtime.mjs',
