@@ -132,14 +132,7 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
   // to detect whether to inject production or development code (such as HMR code)
   if (!nuxt.options.dev) {
     ctx.config.server!.watch = undefined
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore Rolldown-Vite specific
-    if (!vite.rolldownVersion) {
-      // Build Watchers are not available in rolldown-vite yet
-
-      // @ts-expect-error https://github.com/vitejs/rolldown-vite/issues/117
-      ctx.config.build!.watch = undefined
-    }
+    ctx.config.build!.watch = undefined
   }
 
   // TODO: this may no longer be needed with most recent vite version
