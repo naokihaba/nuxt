@@ -95,17 +95,17 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
                 : chunk => withoutLeadingSlash(join(nuxt.options.app.buildAssetsDir, `${sanitizeFilePath(filename(chunk.names[0]!))}.[hash].[ext]`)),
             },
           },
-          // TODO: Watch is not supported in rolldown-vite yet
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore Rolldown-Vite specific
-          ...vite.rolldownVersion
-            ? {}
-            : {
-                watch: {
+          watch: {
+            ...(vite.rolldownVersion
+              ? {
+                  // TODO: Find equivalent for rolldown-vite here
+                }
+              : {
                   chokidar: { ...nuxt.options.watchers.chokidar, ignored: [isIgnored, /[\\/]node_modules[\\/]/] },
-                  exclude: nuxt.options.ignore,
-                },
-              },
+                }
+            ),
+            exclude: nuxt.options.ignore,
+          },
         },
         plugins: [
           // add resolver for files in public assets directories
