@@ -1,9 +1,10 @@
 import type { FetchError, FetchOptions } from 'ofetch'
 import type { $Fetch, H3Event$Fetch, NitroFetchRequest, TypedInternalResponse, AvailableRouterMethod as _AvailableRouterMethod } from 'nitro/types'
 import type { MaybeRef, MaybeRefOrGetter, Ref } from 'vue'
-import { computed, reactive, toValue } from 'vue'
+import { computed, reactive, toValue, watch } from 'vue'
 import { hash } from 'ohash'
 
+import { isPlainObject } from '@vue/shared'
 import { useRequestFetch } from './ssr'
 import type { AsyncData, AsyncDataOptions, KeysOf, MultiWatchSources, PickFrom } from './asyncData'
 import { useAsyncData } from './asyncData'
@@ -98,12 +99,6 @@ export function useFetch<
   const _request = computed(() => toValue(request))
 
   const key = computed(() => toValue(opts.key) || ('$f' + hash([autoKey, typeof _request.value === 'string' ? _request.value : '', ...generateOptionSegments(opts)])))
-  if (!key.value || typeof key.value !== 'string') {
-    throw new TypeError('[nuxt] [useFetch] key must be a string: ' + key.value)
-  }
-  if (!request) {
-    throw new Error('[nuxt] [useFetch] request is missing.')
-  }
 
   if (!opts.baseURL && typeof _request.value === 'string' && (_request.value[0] === '/' && _request.value[1] === '/')) {
     throw new Error('[nuxt] [useFetch] the request URL must not start with "//".')
@@ -115,7 +110,7 @@ export function useFetch<
     default: defaultFn,
     transform,
     pick,
-    watch,
+    watch: watchSources,
     immediate,
     getCachedData,
     deep,
@@ -139,27 +134,19 @@ export function useFetch<
     getCachedData,
     deep,
     dedupe,
-    watch: watch === false
-      ? []
-      : [
-          ...(watch || []),
-          opts.key
-            ? _fetchOptions
-            : reactive({
-                ..._fetchOptions,
-                // these methods are included in the `key`
-                method: undefined,
-                baseURL: undefined,
-                params: undefined,
-                query: undefined,
-                body: undefined,
-              }),
-        ],
+    watch: watchSources === false ? [] : [...(watchSources || []), _fetchOptions],
   }
 
   if (import.meta.dev) {
     // @ts-expect-error private property
     _asyncDataOptions._functionName ||= 'useFetch'
+  }
+
+  // ensure that updates to watched sources trigger an update
+  if (watchSources !== false && !immediate) {
+    watch([...(watchSources || []), _fetchOptions], () => {
+      _asyncDataOptions.immediate = true
+    }, { flush: 'sync', once: true })
   }
 
   let controller: AbortController
@@ -281,7 +268,22 @@ function generateOptionSegments<_ResT, DataT, DefaultT> (opts: UseFetchOptions<_
     segments.push(unwrapped)
   }
   if (opts.body) {
-    segments.push(hash(toValue(opts.body)))
+    const value = toValue(opts.body)
+    if (!value) {
+      segments.push(hash(value))
+    } else if (value instanceof ArrayBuffer) {
+      segments.push(hash(Object.fromEntries([...new Uint8Array(value).entries()].map(([k, v]) => [k, v.toString()]))))
+    } else if (value instanceof FormData) {
+      segments.push(hash(Object.fromEntries(value.entries())))
+    } else if (isPlainObject(value)) {
+      segments.push(hash(reactive(value)))
+    } else {
+      try {
+        segments.push(hash(value))
+      } catch {
+        console.warn('[useFetch] Failed to hash body', value)
+      }
+    }
   }
   return segments
 }
