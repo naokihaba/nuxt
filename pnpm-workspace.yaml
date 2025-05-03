@@ -7,8 +7,9 @@ packages:
   - test/fixtures/*
 
 ignoredBuiltDependencies:
-  - vue-demi
   - esbuild
 
 onlyBuiltDependencies:
   - rolldown
+  - unrs-resolver
+  - vue-demi
