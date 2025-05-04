@@ -96,6 +96,8 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
             },
           },
           watch: {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore Rolldown-Vite specific
             ...(vite.rolldownVersion
               ? {
                   // TODO: Find equivalent for rolldown-vite here
