@@ -201,7 +201,7 @@ export const ComponentsChunkPlugin = (options: ChunkPluginOptions) => {
                     type: 'chunk',
                     fileName: '_nuxt/' + hash(component.filePath) + '.mjs',
                     id: component.filePath,
-                    ...(isRolldownCompatEnabled 
+                    ...(isRolldownCompatEnabled
                       ? {} // TODO: Waiting for https://github.com/rolldown/rolldown/issues/3500
                       : { preserveSignature: 'strict' }),
                   })
