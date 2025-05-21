@@ -55,11 +55,11 @@ export const bundle: NuxtBuilder['bundle'] = async (nuxt) => {
 
   const { $client, $server, ...viteConfig } = nuxt.options.vite
 
-  if(vite.rolldownVersion)  {
-    if(viteConfig.esbuild) {
+  if (vite.rolldownVersion) {
+    if (viteConfig.esbuild) {
       delete viteConfig.esbuild
     }
-    if(viteConfig.optimizeDeps?.esbuildOptions) {
+    if (viteConfig.optimizeDeps?.esbuildOptions) {
       delete viteConfig.optimizeDeps.esbuildOptions
     }
   }
